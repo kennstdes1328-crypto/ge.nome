@@ -1,0 +1,108 @@
+syntax = "proto3";
+
+package genomefilm.v1;
+
+// Protobuf schema for Film Genome ASTs
+// Initial scaffold matching specs/ast_schema.yaml
+
+message AudioAST {
+  string id = 1;
+  string source = 2; // filename or URI
+  int32 duration_ms = 3;
+  AudioNode root = 4;
+}
+
+message AudioNode {
+  string id = 1;
+  string type = 2; // e.g., "beat", "bar", "phrase", "verse", "drop", "buildup"
+  int32 start_ms = 3;
+  int32 end_ms = 4;
+  map<string, string> labels = 5; // energy, tension, key, tempo, mood
+  Features features = 6;
+  repeated AudioNode children = 7;
+}
+
+message Features {
+  repeated float mfcc = 1;
+  repeated float mfcc_deltas = 2;
+  repeated float chroma = 3;
+  float energy = 4;
+}
+
+message ClipAST {
+  string id = 1;
+  string path = 2; // storage path or URI
+  int32 start_ms = 3;
+  int32 end_ms = 4;
+  int32 duration_ms = 5;
+  repeated string scene_tags = 6;
+  string emotion = 7;
+  repeated string objects = 8;
+  Camera camera = 9;
+  Color color = 10;
+  repeated float embeddings = 11; // CLIP/VLM embedding vector
+}
+
+message Camera {
+  string type = 1;
+  float motion_energy = 2;
+  // optional position/velocity fields omitted for lightweight ClipAST
+}
+
+message Color {
+  string dominant = 1;
+  repeated string palette = 2;
+}
+
+message SceneAST {
+  string id = 1;
+  string name = 2;
+  string mood = 3;
+  repeated ShotAST shots = 4;
+}
+
+message ShotAST {
+  string id = 1;
+  int32 duration_ms = 2;
+  CameraFull camera = 3;
+  float energy = 4;
+  string transition = 5;
+  repeated FrameAST frame_directives = 6;
+}
+
+message CameraFull {
+  string type = 1;
+  // simple vector fields for demonstration
+  float pos_x = 2;
+  float pos_y = 3;
+  float pos_z = 4;
+  float vel_x = 5;
+  float vel_y = 6;
+  float vel_z = 7;
+}
+
+message FrameAST {
+  float zoom = 1;
+  float pan_x = 2;
+  float pan_y = 3;
+  string lut = 4;
+  float grain = 5;
+  repeated Subtitle subtitles = 6;
+}
+
+message Subtitle {
+  int32 start_ms = 1;
+  int32 end_ms = 2;
+  string text = 3;
+}
+
+message FilmDNA {
+  string film_id = 1;
+  string title = 2;
+  repeated string themes = 3;
+  map<string, string> emotion_curve = 4; // section -> emotion
+  repeated string scene_order = 5;
+  map<string, string> camera_language = 6;
+  repeated string color_language = 7;
+  map<string, double> reward_metrics = 8;
+}
