@@ -1,0 +1,16 @@
+{
+  "film_id": "film_001",
+  "title": "Sample FilmDNA — Street Confidence",
+  "themes": ["street", "confidence", "night"],
+  "emotion_curve": {
+    "intro": "uncertain",
+    "verse": "hope",
+    "chorus": "victory",
+    "outro": "peace"
+  },
+  "scene_order": ["scene_1", "scene_2", "scene_3"],
+  "camera_language": {"default": "handheld", "hero": "push"},
+  "color_language": ["orange", "gold"],
+  "reward_metrics": {"tiktok_completion": 0.0, "instagram_shares": 0.0},
+  "embeddings": [0.12, 0.05, 0.97, 0.33]
+}
