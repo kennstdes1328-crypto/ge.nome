@@ -1,0 +1,16 @@
+{
+  "themes": ["street", "confidence", "night", "friends"],
+  "emotion_curve": {
+    "intro": "uncertain",
+    "verse": "hope",
+    "prechorus": "tension",
+    "chorus": "victory",
+    "bridge": "reflection",
+    "outro": "peace"
+  },
+  "sample_annotations": {
+    "bpm": 120,
+    "key": "C#m",
+    "duration_ms": 182000
+  }
+}
