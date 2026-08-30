@@ -1,0 +1,212 @@
+# Audio/Visual AST Schemas for ge.nome
+# YAML schema describing core ASTs used by the Film Genome system.
+
+AudioAST:
+  description: "High-level hierarchical representation of a music track used to drive visual decisions."
+  type: object
+  properties:
+    id:
+      type: string
+      description: Unique identifier for the AST instance
+    source:
+      type: string
+      description: Source filename or URI of the audio
+    duration_ms:
+      type: integer
+    root:
+      $ref: '#/AudioNode'
+
+AudioNode:
+  description: "A node in the Audio AST. Terminals represent beats/onsets; non-terminals represent phrases/sections."
+  type: object
+  properties:
+    id:
+      type: string
+    type:
+      type: string
+      description: "node type, e.g. 'beat','bar','phrase','verse','drop','buildup'"
+    start_ms:
+      type: integer
+    end_ms:
+      type: integer
+    labels:
+      type: object
+      additionalProperties:
+        type: string
+      description: "Freeform labels (energy, tension, key, tempo, mood, etc.)"
+    features:
+      type: object
+      description: "Dense features for the node (MFCC, chroma, energy, deltas)."
+      properties:
+        mfcc:
+          type: array
+          items:
+            type: number
+        mfcc_deltas:
+          type: array
+          items:
+            type: number
+        chroma:
+          type: array
+          items:
+            type: number
+        energy:
+          type: number
+    children:
+      type: array
+      items:
+        $ref: '#/AudioNode'
+
+ClipAST:
+  description: "Semantic metadata for a clip or frame range in the video library. Stored alongside content and embeddings."
+  type: object
+  properties:
+    id:
+      type: string
+    path:
+      type: string
+      description: "storage path or URI to the clip or asset"
+    start_ms:
+      type: integer
+    end_ms:
+      type: integer
+    duration_ms:
+      type: integer
+    scene_tags:
+      type: array
+      items:
+        type: string
+    emotion:
+      type: string
+    objects:
+      type: array
+      items:
+        type: string
+    camera:
+      type: object
+      properties:
+        type:
+          type: string
+        motion_energy:
+          type: number
+    color:
+      type: object
+      properties:
+        dominant:
+          type: string
+        palette:
+          type: array
+          items:
+            type: string
+    embeddings:
+      type: array
+      items:
+        type: number
+      description: "Float vector (CLIP/VLM embedding)"
+
+SceneAST:
+  description: "Scene-level AST aggregating shots that semantically belong together."
+  type: object
+  properties:
+    id:
+      type: string
+    name:
+      type: string
+    mood:
+      type: string
+    shots:
+      type: array
+      items:
+        $ref: '#/ShotAST'
+
+ShotAST:
+  description: "Shot-level directives used by the renderer (duration, camera, transition, energy)."
+  type: object
+  properties:
+    id:
+      type: string
+    duration_ms:
+      type: integer
+    camera:
+      type: object
+      properties:
+        type:
+          type: string
+        position:
+          type: object
+          properties:
+            x: {type: number}
+            y: {type: number}
+            z: {type: number}
+        velocity:
+          type: object
+          properties:
+            x: {type: number}
+            y: {type: number}
+            z: {type: number}
+    energy:
+      type: number
+    transition:
+      type: string
+    frame_directives:
+      type: array
+      items:
+        $ref: '#/FrameAST'
+
+FrameAST:
+  description: "Low-level per-frame directives (crop, lut, subtitles, pan/zoom)."
+  type: object
+  properties:
+    zoom:
+      type: number
+    pan_x:
+      type: number
+    pan_y:
+      type: number
+    lut:
+      type: string
+    grain:
+      type: number
+    subtitles:
+      type: array
+      items:
+        type: object
+        properties:
+          start_ms: {type: integer}
+          end_ms: {type: integer}
+          text: {type: string}
+
+FilmDNA:
+  description: "Persisted film-level metadata that describes the overall film style and decisions."
+  type: object
+  properties:
+    film_id:
+      type: string
+    title:
+      type: string
+    themes:
+      type: array
+      items:
+        type: string
+    emotion_curve:
+      type: object
+      additionalProperties:
+        type: string
+    scene_order:
+      type: array
+      items:
+        type: string
+    camera_language:
+      type: object
+      additionalProperties:
+        type: string
+    color_language:
+      type: array
+      items:
+        type: string
+    reward_metrics:
+      type: object
+      additionalProperties:
+        type: number
+
+# End of specs/ast_schema.yaml
